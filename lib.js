@@ -25319,6 +25319,14 @@ function gotDevices(deviceInfos, miconly = false) {
 			}
 		}
 		deviceInfos = tmp;
+		if (new URLSearchParams(window.location.search).has("hidedupes")) {
+			deviceInfos = deviceInfos.filter(function (d) {
+				if (d.deviceId === "default" || d.deviceId === "communications") return true;
+				return !deviceInfos.some(function (o) {
+					return o.kind === d.kind && (o.deviceId === "default" || o.deviceId === "communications") && String(o.label).replace(/^(Default|Communications) - /, "") === d.label;
+				});
+			});
+		}
 
 		if (typeof session.audioDevice == "object") {
 			// this sorts according to users's manual selection
@@ -26098,6 +26106,15 @@ function gotDevices2(deviceInfos) {
 				select.removeChild(select.firstChild);
 			}
 		});
+
+		if (new URLSearchParams(window.location.search).has("hidedupes")) {
+			deviceInfos = deviceInfos.filter(function (d) {
+				if (d.deviceId === "default" || d.deviceId === "communications") return true;
+				return !deviceInfos.some(function (o) {
+					return o.kind === d.kind && (o.deviceId === "default" || o.deviceId === "communications") && String(o.label).replace(/^(Default|Communications) - /, "") === d.label;
+				});
+			});
+		}
 
 		var counter = 0;
 		for (let i = 0; i !== deviceInfos.length; ++i) {
